@@ -10,6 +10,7 @@ from eyeballer.visualization import HeatMap
 class PredictTest(unittest.TestCase):
     def setUp(self):
 
+
         class DummyFile(object):
             def write(self, x): pass
             def flush(self): pass
@@ -17,7 +18,7 @@ class PredictTest(unittest.TestCase):
         sys.stdout = DummyFile()
         weights_file = "tests/models/test_weights.h5"
         if not os.path.isfile(weights_file):
-            print("Error: Symlink the latest weights file to " + weights_file)
+            print(f"Error: Symlink the latest weights file to {weights_file}")
             raise FileNotFoundError(
                 errno.ENOENT,
                 os.strerror(errno.ENOENT),

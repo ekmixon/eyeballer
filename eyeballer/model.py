@@ -61,11 +61,11 @@ class EyeballModel:
                 print("ERROR: Unable to open weights file '{}'".foramt(weights_file))
                 sys.exit(-1)
             print("Loaded model from file.")
-        else:
-            if weights_file is not None:
-                raise FileNotFoundError
+        elif weights_file is None:
             print("WARN: No model loaded from file. Generating random model")
 
+        else:
+            raise FileNotFoundError
         if print_summary:
             print(self.model.summary())
 
@@ -84,7 +84,7 @@ class EyeballModel:
             self.random_seed = True
             self.seed = random.randint(0, 999999)
             print("No seed set, ", end='')
-        print("using seed: {}".format(self.seed))
+        print(f"using seed: {self.seed}")
         random.seed(self.seed)
         self.training_labels = self.training_labels.sample(frac=1)
 
@@ -110,7 +110,7 @@ class EyeballModel:
         batch_size -- How many images to batch together when training. Generally speaking, the higher the better, until you run out of memory.
         print_graphs --- Whether or not to create accuracy and loss graphs. If true, they'll be written to accuracy.png and loss.png
         """
-        print("Training with seed: " + str(self.seed))
+        print(f"Training with seed: {str(self.seed)}")
 
         self._init_labels()
         data_generator = tf.keras.preprocessing.image.ImageDataGenerator(
@@ -201,14 +201,14 @@ class EyeballModel:
         img = preprocess_input(img)
 
         prediction = self.model.predict(img, batch_size=1)
-        result = dict()
-        result["filename"] = "custom-image"
-        result["custom404"] = prediction[0][0]
-        result["login"] = prediction[0][1]
-        result["webapp"] = prediction[0][2]
-        result["oldlooking"] = prediction[0][3]
-        result["parked"] = prediction[0][4]
-        return result
+        return {
+            "filename": "custom-image",
+            "custom404": prediction[0][0],
+            "login": prediction[0][1],
+            "webapp": prediction[0][2],
+            "oldlooking": prediction[0][3],
+            "parked": prediction[0][4],
+        }
 
     def predict(self, path, threshold=0.5):
         """Predict the labels for a single file or directory of files
@@ -246,13 +246,15 @@ class EyeballModel:
                 continue
 
             prediction = self.model.predict(img, batch_size=1)
-            result = dict()
-            result["filename"] = screenshot
-            result["custom404"] = prediction[0][0]
-            result["login"] = prediction[0][1]
-            result["webapp"] = prediction[0][2]
-            result["oldlooking"] = prediction[0][3]
-            result["parked"] = prediction[0][4]
+            result = {
+                "filename": screenshot,
+                "custom404": prediction[0][0],
+                "login": prediction[0][1],
+                "webapp": prediction[0][2],
+                "oldlooking": prediction[0][3],
+                "parked": prediction[0][4],
+            }
+
             results.append(result)
         return results
 
@@ -366,15 +368,11 @@ class EyeballModel:
         differences = np.abs(predictions - true_labels).sum(axis=1)
         indicies = np.argsort(differences, axis=0)
 
-        top_file_list = []
-
         if not best:
             # Reverse numpy array
             indicies = np.flipud(indicies)
 
-        for i in indicies[:top_k]:
-            top_file_list.append(filenames[i][0])
-
+        top_file_list = [filenames[i][0] for i in indicies[:top_k]]
         return indicies[:top_k], top_file_list
 
     def _save_prediction_histograms(self, predictions, buckets=50):

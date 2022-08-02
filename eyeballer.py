@@ -111,7 +111,7 @@ def pretty_print_evaluation(results):
     print("'None of the above' Recall: {:4.2%}".format(results['none_of_the_above_recall']))
     print("All or nothing Accuracy: {:4.2%}".format(results['all_or_nothing_accuracy']))
     print("Overall Binary Accuracy: {:4.2%}".format(results['total_binary_accuracy']))
-    print("Top 10 worst predictions: {}".format(results['top_10_worst'][1]))
+    print(f"Top 10 worst predictions: {results['top_10_worst'][1]}")
 
 
 @cli.command()

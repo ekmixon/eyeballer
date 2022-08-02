@@ -38,7 +38,10 @@ class HeatMap():
                     heatmap, worst_score = self._get_heatmap(label, boxsize)
                     if worst_score > self.threshold:
                         boxsize += 28
-                        print("Didn't get a good image for {}. Trying again with a bigger boxsize: {}".format(label, boxsize))
+                        print(
+                            f"Didn't get a good image for {label}. Trying again with a bigger boxsize: {boxsize}"
+                        )
+
                     else:
                         heatmaps.append(heatmap)
                         labels.append(label)
@@ -61,7 +64,7 @@ class HeatMap():
             subplots.imshow(heatmap, alpha=0.5, interpolation='none')
             subplots.set_title(labels[0])
         plt.savefig(output_file)
-        print("Heatmap image written to: {}".format(output_file))
+        print(f"Heatmap image written to: {output_file}")
 
     def _get_heatmap(self, label, boxsize):
         worst_score = 1

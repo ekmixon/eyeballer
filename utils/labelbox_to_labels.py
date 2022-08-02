@@ -19,18 +19,18 @@ with open("newlabels.csv", "w", newline="") as csvfile:
             filename = row["External ID"]
             print(row["Label"])
             labelstring = row["Label"]
-            if row["Label"] == "Skip":
+            if labelstring == "Skip":
                 labelstring = '{"imageclassification":[]}'
             labels = json.loads(labelstring)
 
-            newrow = dict()
-            newrow["filename"] = filename
-            newrow["oldlooking"] = True
-            newrow["login"] = "loginpage" in labels["imageclassification"]
-            newrow["homepage"] = "homepage" in labels["imageclassification"]
-            newrow["custom404"] = "custom404"in labels["imageclassification"]
-
-            newrow["evaluation"] = random.random() > 0.8
+            newrow = {
+                "filename": filename,
+                "oldlooking": True,
+                "login": "loginpage" in labels["imageclassification"],
+                "homepage": "homepage" in labels["imageclassification"],
+                "custom404": "custom404" in labels["imageclassification"],
+                "evaluation": random.random() > 0.8,
+            }
 
             rows.append(newrow)
         labelwriter.writerows(rows)

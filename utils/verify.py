@@ -11,10 +11,7 @@ with open("labels.csv", newline="") as csvfile:
     # fieldnames = next(csvreader)
     file_list = [f for f in listdir("images") if isfile(join("images", f))]
 
-    label_list = []
-    for row in csvreader:
-        label_list.append(row["filename"])
-
+    label_list = [row["filename"] for row in csvreader]
     print(len(file_list), "files")
     print(len(label_list), "labels")
 
